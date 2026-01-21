@@ -23,6 +23,16 @@
       "require": "./dist/vue.js",
       "import": "./dist/vue.mjs",
       "types": "./dist/vue.d.ts"
+    },
+    "./svelte": {
+      "require": "./dist/svelte.js",
+      "import": "./dist/svelte.mjs",
+      "types": "./dist/svelte.d.ts"
+    },
+    "./preact": {
+      "require": "./dist/preact.js",
+      "import": "./dist/preact.mjs",
+      "types": "./dist/preact.d.ts"
     }
   },
   "files": [
@@ -83,9 +93,11 @@
     "eslint": "^8.0.0",
     "jest": "^29.0.0",
     "jest-environment-jsdom": "^29.0.0",
+    "preact": "^10.28.2",
     "react": "^19.2.3",
     "rollup": "^4.0.0",
     "size-limit": "^8.0.0",
+    "svelte": "^5.47.1",
     "ts-jest": "^29.0.0",
     "tslib": "^2.8.1",
     "typedoc": "^0.25.0",
@@ -93,7 +105,9 @@
     "vue": "^3.5.27"
   },
   "peerDependencies": {
+    "preact": ">=10.0.0",
     "react": ">=16.8.0",
+    "svelte": ">=3.0.0",
     "vue": ">=3.0.0"
   },
   "peerDependenciesMeta": {
@@ -101,6 +115,12 @@
       "optional": true
     },
     "vue": {
+      "optional": true
+    },
+    "svelte": {
+      "optional": true
+    },
+    "preact": {
       "optional": true
     }
   },

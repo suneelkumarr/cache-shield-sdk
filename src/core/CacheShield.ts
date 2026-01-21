@@ -76,7 +76,14 @@ export class CacheShield {
   }
 
   /**
-   * Clear all specified caches
+   * Cleanup any event listeners
+   */
+  destroy(): void {
+    this.bfCache.destroy();
+  }
+
+  /**
+   * Clear all caches based on configuration
    */
   async clear(options?: Partial<CacheShieldConfig>): Promise<ClearResult> {
     const startTime = performance.now();

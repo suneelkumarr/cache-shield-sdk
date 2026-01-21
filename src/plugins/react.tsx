@@ -1,10 +1,9 @@
-import React, { 
-  createContext, 
-  useContext, 
-  useCallback, 
+import React, {
+  createContext,
+  useContext,
+  useCallback,
   useState,
-  useEffect,
-  ReactNode 
+  ReactNode
 } from 'react';
 import { CacheShield } from '../core/CacheShield';
 import { 

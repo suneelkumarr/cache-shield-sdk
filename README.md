@@ -11,7 +11,8 @@
 - 🧹 **Clear All Cache Types** - Service Workers, Cache API, localStorage, sessionStorage, IndexedDB, Cookies
 - ⚡ **Lightweight** - ~4KB gzipped, zero dependencies
 - 🎯 **Selective Clearing** - Target specific caches, preserve essential data
-- 🔌 **Framework Plugins** - First-class React & Vue support
+- 🛡️ **Mobile Optimized** - BfCache protection & Smart Reloading for iOS/Android
+- 🔌 **Framework Plugins** - React, Vue, Svelte, Preact
 - 📦 **TypeScript** - Full type definitions included
 - 🌐 **Universal** - Works in any browser environment
 
@@ -136,6 +137,43 @@ const { clear, isClearing, capabilities } = useCacheShield();
 </template>
 ```
 
+## 🧡 Svelte
+```typescript
+// App.svelte
+<script>
+  import { onMount } from 'svelte';
+  import { createCacheShieldStore, setCacheShield } from 'cache-shield-sdk/svelte';
+  
+  const store = createCacheShieldStore({ debug: true });
+  setCacheShield(store);
+</script>
+
+<slot />
+
+// Component.svelte
+<script>
+  import { useCacheShield } from 'cache-shield-sdk/svelte';
+  const { clear, isClearing } = useCacheShield();
+</script>
+
+<button on:click={() => clear()} disabled={$isClearing}>
+  {$isClearing ? 'Clearing...' : 'Clear Cache'}
+</button>
+```
+
+## ⚛️ Preact
+```tsx
+import { CacheShieldProvider, useCacheShield } from 'cache-shield-sdk/preact';
+
+function App() {
+  return (
+    <CacheShieldProvider config={{ debug: true }}>
+      <MyComponent />
+    </CacheShieldProvider>
+  );
+}
+```
+
 ## 🌐 CDN / Browser
 
 ```html
@@ -164,6 +202,7 @@ const { clear, isClearing, capabilities } = useCacheShield();
 | `indexedDB` | `IndexedDBOptions` | `{}` | IndexedDB-specific options |
 | `debug` | `boolean` | `false` | Enable debug logging |
 | `autoReload` | `boolean` | `false` | Reload after clearing |
+| `preventBfCache` | `boolean` | `false` | Force reload on back button (iOS fix) |
 | `hooks` | `CacheShieldHooks` | `{}` | Lifecycle callbacks |
 
 #### Methods

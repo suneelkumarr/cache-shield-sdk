@@ -17,8 +17,14 @@ export type {
 
 export { CacheShieldError } from './core/types';
 
-// Utils
-export { detectCapabilities, isBrowser, isSecureContext } from './utils/detector';
+// Plugins - Framework integrations available via separate entry points
+// Import from specific framework bundles:
+// - import { ... } from 'cache-shield-sdk/react'
+// - import { ... } from 'cache-shield-sdk/vue'
+// - import { ... } from 'cache-shield-sdk/angular'
+// - etc.
+
+// All framework plugins are optional peer dependencies
 
 // Convenience function
 import { CacheShield } from './core/CacheShield';

@@ -61,8 +61,8 @@ export default [
   {
     input: 'src/plugins/react.tsx',
     output: [
-      { file: 'dist/react.js', format: 'cjs', exports: 'named' },
-      { file: 'dist/react.mjs', format: 'es' }
+      { file: 'dist/react.js', format: 'cjs', exports: 'named', sourcemap: true },
+      { file: 'dist/react.mjs', format: 'es', sourcemap: true }
     ],
     external: ['react'],
     plugins: [
@@ -81,10 +81,32 @@ export default [
   {
     input: 'src/plugins/vue.ts',
     output: [
-      { file: 'dist/vue.js', format: 'cjs', exports: 'named' },
-      { file: 'dist/vue.mjs', format: 'es' }
+      { file: 'dist/vue.js', format: 'cjs', exports: 'named', sourcemap: true },
+      { file: 'dist/vue.mjs', format: 'es', sourcemap: true }
     ],
     external: ['vue'],
+    plugins
+  },
+
+  // Svelte plugin
+  {
+    input: 'src/plugins/svelte.ts',
+    output: [
+      { file: 'dist/svelte.js', format: 'cjs', exports: 'named', sourcemap: true },
+      { file: 'dist/svelte.mjs', format: 'es', sourcemap: true }
+    ],
+    external: ['svelte', 'svelte/store'],
+    plugins
+  },
+
+  // Preact plugin
+  {
+    input: 'src/plugins/preact.ts',
+    output: [
+      { file: 'dist/preact.js', format: 'cjs', exports: 'named', sourcemap: true },
+      { file: 'dist/preact.mjs', format: 'es', sourcemap: true }
+    ],
+    external: ['preact', 'preact/hooks'],
     plugins
   }
 ];

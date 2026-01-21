@@ -13,7 +13,11 @@ export declare class CacheShield {
     private static readonly DEFAULTS;
     constructor(config?: CacheShieldConfig);
     /**
-     * Clear all specified caches
+     * Cleanup any event listeners
+     */
+    destroy(): void;
+    /**
+     * Clear all caches based on configuration
      */
     clear(options?: Partial<CacheShieldConfig>): Promise<ClearResult>;
     /**

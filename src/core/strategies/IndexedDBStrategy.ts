@@ -69,12 +69,97 @@ export class IndexedDBStrategy {
   private async getDatabases(): Promise<IDBDatabaseInfo[]> {
     // Modern browsers support indexedDB.databases()
     if ('databases' in indexedDB) {
-      return indexedDB.databases();
+      try {
+        return await indexedDB.databases();
+      } catch (error) {
+        this.logger.warn('indexedDB.databases() failed', error);
+        return this.getFallbackDatabases();
+      }
     }
 
-    // Fallback: return empty array (can't enumerate DBs in older browsers)
-    this.logger.warn('indexedDB.databases() not supported');
-    return [];
+    // Fallback: For Safari and older browsers
+    return this.getFallbackDatabases();
+  }
+
+  private async getFallbackDatabases(): Promise<IDBDatabaseInfo[]> {
+    // Use user-provided database names from config
+    const configured = this.config.indexedDB?.databases || [];
+    if (configured.length > 0) {
+      this.logger.debug('Using configured database names', configured);
+      return configured.map(name => ({ name }));
+    }
+
+    // Try to detect common IndexedDB databases
+    const commonNames = [
+      'firebaseLocalStorageDb',
+      '_ionicstorage',
+      'reactnative',
+      'redux-persist',
+      'localforage',
+      'ngsw:cache:v1',
+      'vuex-persist',
+      'pouchdb',
+      '__zone_symbol__Promise',
+      'default'
+    ];
+
+    const detected: IDBDatabaseInfo[] = [];
+
+    for (const dbName of commonNames) {
+      try {
+        const exists = await this.testDatabaseExists(dbName);
+        if (exists) {
+          detected.push({ name: dbName });
+        }
+      } catch (e) {
+        // Database doesn't exist or error, continue
+      }
+    }
+
+    if (detected.length === 0) {
+      this.logger.warn(
+        'No IndexedDB databases found. Specify databases in config for Safari/older browsers.',
+        { example: 'indexedDB: { databases: ["my-db"] }' }
+      );
+    }
+
+    return detected;
+  }
+
+  private testDatabaseExists(name: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      try {
+        const request = indexedDB.open(name);
+        let found = false;
+
+        request.onsuccess = () => {
+          const db = request.result;
+          found = db.objectStoreNames.length > 0;
+          db.close();
+          resolve(found);
+        };
+
+        request.onerror = () => {
+          resolve(false);
+        };
+
+        request.onupgradeneeded = () => {
+          // Database exists but is new
+          request.result.close();
+          resolve(false);
+        };
+
+        // Timeout after 1 second
+        setTimeout(() => {
+          if (!found && request.result) {
+            request.result.close();
+            resolve(found);
+          }
+        }, 1000);
+      } catch (e) {
+        resolve(false);
+      }
+    });
   }
 
   private deleteDatabase(name: string): Promise<void> {

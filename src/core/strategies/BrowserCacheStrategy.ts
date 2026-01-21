@@ -121,16 +121,48 @@ export class BrowserCacheStrategy {
       return;
     }
     
-    // Try different domain combinations
-    const domainsToTry = domains || [
-      '', // Current domain
-      window.location.hostname,
-      '.' + window.location.hostname,
-      window.location.hostname.split('.').slice(-2).join('.'), // Root domain (best effort)
-      window.location.hostname.split('.').slice(-3).join('.')  // Deeper subdomains
-    ];
-
+    // Auto-detect domains using improved heuristic
+    const domainsToTry = domains || this.getDomainsToTry();
     this.deleteCookieWithDomain(name, paths, domainsToTry, expiry);
+  }
+
+  private getDomainsToTry(): string[] {
+    const hostname = window.location.hostname;
+    const parts = hostname.split('.');
+    const domains: string[] = [''];
+    
+    // Always try the exact hostname
+    if (hostname) {
+      domains.push(hostname);
+      domains.push('.' + hostname);
+    }
+
+    // Try parent domains (from most specific to least)
+    if (parts.length >= 2) {
+      // Try 2-part domain (example.com)
+      const twoPartDomain = parts.slice(-2).join('.');
+      if (twoPartDomain !== hostname) {
+        domains.push(twoPartDomain);
+        domains.push('.' + twoPartDomain);
+      }
+    }
+
+    if (parts.length >= 3) {
+      // Try 3-part domain (for .co.uk, .gov.au patterns)
+      const threePartDomain = parts.slice(-3).join('.');
+      if (threePartDomain !== hostname && 
+          !domains.includes(threePartDomain) &&
+          threePartDomain.split('.').length >= 2) {
+        domains.push(threePartDomain);
+        domains.push('.' + threePartDomain);
+      }
+    }
+
+    // Remove duplicates and invalid entries
+    return [...new Set(domains)].filter(d => {
+      // Allow empty string (current domain) and valid domain strings
+      return d === '' || d === 'localhost' || /^\.?[a-zA-Z0-9][-a-zA-Z0-9]*(\.[a-zA-Z0-9][-a-zA-Z0-9]*)+$/.test(d);
+    });
   }
 
   private deleteCookieWithDomain(name: string, paths: string[], domains: string[], expiry: string): void {
@@ -140,8 +172,19 @@ export class BrowserCacheStrategy {
         if (domain && domain.indexOf('.') === -1 && domain !== 'localhost') continue;
 
         const domainPart = domain ? `; domain=${domain}` : '';
+        
+        // Standard cookie deletion
         document.cookie = `${name}=; expires=${expiry}; path=${path}${domainPart}`;
+        
+        // Also try secure flag for HTTPS
         document.cookie = `${name}=; expires=${expiry}; path=${path}${domainPart}; secure`;
+        
+        // Log deletion attempts for debugging
+        this.logger.debug(`Attempted to delete cookie "${name}"`, { 
+          domain: domain || '(current)', 
+          path,
+          timestamp: new Date().toISOString()
+        });
       }
     }
   }

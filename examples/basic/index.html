@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CacheShield SDK - Basic Example</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>CacheShield SDK Demo</h1>
+        
+        <div class="card">
+            <h2>Status</h2>
+            <div id="status" class="status-box">Ready</div>
+        </div>
+
+        <div class="card">
+            <h2>Create Dummy Data</h2>
+            <div class="button-group">
+                <button onclick="createData('localStorage')">Fill LocalStorage</button>
+                <button onclick="createData('sessionStorage')">Fill SessionStorage</button>
+                <button onclick="createData('cookies')">Set Cookies</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Clear Cache</h2>
+            <div class="button-group">
+                <button class="danger" onclick="clearCache('all')">Clear All</button>
+                <button class="warning" onclick="clearCache('localStorage')">Clear LocalStorage</button>
+                <button class="warning" onclick="clearCache('cookies')">Clear Cookies</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Logs</h2>
+            <pre id="logs"></pre>
+        </div>
+    </div>
+
+    <!-- Load the UMD build -->
+    <script src="../../dist/index.umd.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

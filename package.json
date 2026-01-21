@@ -1,6 +1,6 @@
 {
   "name": "cache-shield-sdk",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "🛡️ Clear browser caches from client-side with ease. Service Workers, Storage, IndexedDB, Cookies & more.",
   "type": "module",
   "main": "dist/index.js",

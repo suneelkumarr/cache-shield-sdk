@@ -16,7 +16,8 @@ const banner = `/*!
 const plugins = [
   resolve(),
   commonjs(),
-  typescript({ tsconfig: './tsconfig.json' })
+  typescript({ tsconfig: './tsconfig.json' }),
+  terser()
 ];
 
 export default [
@@ -56,20 +57,6 @@ export default [
     plugins
   },
   
-  // Main bundle - UMD minified
-  {
-    input: 'src/index.ts',
-    output: {
-      file: 'dist/index.umd.min.js',
-      format: 'umd',
-      name: 'CacheShield',
-      banner,
-      exports: 'named',
-      plugins: [terser()]
-    },
-    plugins
-  },
-  
   // React plugin
   {
     input: 'src/plugins/react.tsx',
@@ -85,7 +72,8 @@ export default [
         tsconfig: './tsconfig.json',
         declaration: true,
         declarationDir: 'dist'
-      })
+      }),
+      terser()
     ]
   },
   

@@ -20,6 +20,17 @@ const plugins = [
   terser()
 ];
 
+const pluginsWithDeclarations = [
+  resolve(),
+  commonjs(),
+  typescript({ 
+    tsconfig: './tsconfig.json',
+    declaration: true,
+    declarationDir: 'dist'
+  }),
+  terser()
+];
+
 export default [
   // Main bundle - CJS
   {
@@ -30,7 +41,7 @@ export default [
       banner,
       exports: 'named'
     },
-    plugins
+    plugins: pluginsWithDeclarations
   },
   
   // Main bundle - ESM
@@ -41,7 +52,7 @@ export default [
       format: 'es',
       banner
     },
-    plugins
+    plugins: pluginsWithDeclarations
   },
   
   // Main bundle - UMD (browser)
@@ -54,15 +65,15 @@ export default [
       banner,
       exports: 'named'
     },
-    plugins
+    plugins: pluginsWithDeclarations
   },
   
   // React plugin
   {
     input: 'src/plugins/react.tsx',
     output: [
-      { file: 'dist/react.js', format: 'cjs', exports: 'named', sourcemap: true },
-      { file: 'dist/react.mjs', format: 'es', sourcemap: true }
+      { file: 'dist/react.js', format: 'cjs', exports: 'named' },
+      { file: 'dist/react.mjs', format: 'es' }
     ],
     external: ['react'],
     plugins: [
@@ -81,32 +92,32 @@ export default [
   {
     input: 'src/plugins/vue.ts',
     output: [
-      { file: 'dist/vue.js', format: 'cjs', exports: 'named', sourcemap: true },
-      { file: 'dist/vue.mjs', format: 'es', sourcemap: true }
+      { file: 'dist/vue.js', format: 'cjs', exports: 'named' },
+      { file: 'dist/vue.mjs', format: 'es' }
     ],
     external: ['vue'],
-    plugins
+    plugins: pluginsWithDeclarations
   },
 
   // Svelte plugin
   {
     input: 'src/plugins/svelte.ts',
     output: [
-      { file: 'dist/svelte.js', format: 'cjs', exports: 'named', sourcemap: true },
-      { file: 'dist/svelte.mjs', format: 'es', sourcemap: true }
+      { file: 'dist/svelte.js', format: 'cjs', exports: 'named' },
+      { file: 'dist/svelte.mjs', format: 'es' }
     ],
     external: ['svelte', 'svelte/store'],
-    plugins
+    plugins: pluginsWithDeclarations
   },
 
   // Preact plugin
   {
     input: 'src/plugins/preact.ts',
     output: [
-      { file: 'dist/preact.js', format: 'cjs', exports: 'named', sourcemap: true },
-      { file: 'dist/preact.mjs', format: 'es', sourcemap: true }
+      { file: 'dist/preact.js', format: 'cjs', exports: 'named' },
+      { file: 'dist/preact.mjs', format: 'es' }
     ],
     external: ['preact', 'preact/hooks'],
-    plugins
+    plugins: pluginsWithDeclarations
   }
 ];

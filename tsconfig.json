@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "esnext",
-    "declaration": true,
+    "declaration": false,
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
@@ -11,9 +11,10 @@
     "downlevelIteration": true,
     "jsx": "react-jsx"
   },
-  "include": ["src/**/*", "tests/**/*"],
+  "include": ["src/**/*"],
   "exclude": [
     "node_modules", 
-    "dist"
+    "dist",
+    "tests"
   ]
 }

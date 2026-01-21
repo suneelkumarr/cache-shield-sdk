@@ -1,5 +1,5 @@
 /*!
- * cache-shield-sdk v1.0.4
+ * cache-shield-sdk v1.1.0
  * (c) 2026 Suneel Kumar
  * Released under the MIT License
  */
@@ -83,6 +83,45 @@ function __generator(thisArg, body) {
     }
 }
 
+function __values(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+}
+
+function __read(o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+}
+
+function __spreadArray(to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+}
+
 typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
@@ -109,9 +148,10 @@ var BrowserCacheStrategy = /** @class */ (function () {
     }
     BrowserCacheStrategy.prototype.clearCacheAPI = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var cacheNames, cleared, _i, cacheNames_1, cacheName, error_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var cacheNames, cleared, cacheNames_1, cacheNames_1_1, cacheName, e_1_1, error_1;
+            var e_1, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         if (!('caches' in window)) {
                             return [2 /*return*/, {
@@ -120,53 +160,68 @@ var BrowserCacheStrategy = /** @class */ (function () {
                                     error: 'Cache API not supported'
                                 }];
                         }
-                        _a.label = 1;
+                        _b.label = 1;
                     case 1:
-                        _a.trys.push([1, 7, , 8]);
+                        _b.trys.push([1, 11, , 12]);
                         return [4 /*yield*/, caches.keys()];
                     case 2:
-                        cacheNames = _a.sent();
+                        cacheNames = _b.sent();
                         cleared = 0;
-                        _i = 0, cacheNames_1 = cacheNames;
-                        _a.label = 3;
+                        _b.label = 3;
                     case 3:
-                        if (!(_i < cacheNames_1.length)) return [3 /*break*/, 6];
-                        cacheName = cacheNames_1[_i];
+                        _b.trys.push([3, 8, 9, 10]);
+                        cacheNames_1 = __values(cacheNames), cacheNames_1_1 = cacheNames_1.next();
+                        _b.label = 4;
+                    case 4:
+                        if (!!cacheNames_1_1.done) return [3 /*break*/, 7];
+                        cacheName = cacheNames_1_1.value;
                         if (this.shouldExclude(cacheName)) {
                             this.logger.debug("Skipping cache: ".concat(cacheName));
-                            return [3 /*break*/, 5];
+                            return [3 /*break*/, 6];
                         }
-                        if (!this.shouldInclude(cacheName)) return [3 /*break*/, 5];
+                        if (!this.shouldInclude(cacheName)) return [3 /*break*/, 6];
                         return [4 /*yield*/, caches.delete(cacheName)];
-                    case 4:
-                        _a.sent();
+                    case 5:
+                        _b.sent();
                         cleared++;
                         this.logger.debug("Deleted cache: ".concat(cacheName));
-                        _a.label = 5;
-                    case 5:
-                        _i++;
-                        return [3 /*break*/, 3];
-                    case 6: return [2 /*return*/, {
+                        _b.label = 6;
+                    case 6:
+                        cacheNames_1_1 = cacheNames_1.next();
+                        return [3 /*break*/, 4];
+                    case 7: return [3 /*break*/, 10];
+                    case 8:
+                        e_1_1 = _b.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3 /*break*/, 10];
+                    case 9:
+                        try {
+                            if (cacheNames_1_1 && !cacheNames_1_1.done && (_a = cacheNames_1.return)) _a.call(cacheNames_1);
+                        }
+                        finally { if (e_1) throw e_1.error; }
+                        return [7 /*endfinally*/];
+                    case 10: return [2 /*return*/, {
                             type: 'cacheAPI',
                             success: true,
                             itemsCleared: cleared
                         }];
-                    case 7:
-                        error_1 = _a.sent();
+                    case 11:
+                        error_1 = _b.sent();
                         throw new CacheShieldError('Failed to clear Cache API', 'UNKNOWN', 'cacheAPI', error_1 instanceof Error ? error_1 : undefined);
-                    case 8: return [2 /*return*/];
+                    case 12: return [2 /*return*/];
                 }
             });
         });
     };
     BrowserCacheStrategy.prototype.clearCookies = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var cookieConfig, preserveEssential, essentialCookies, targetNames, targetDomains, targetPaths, allCookies, cleared, _loop_1, this_1, _i, allCookies_1, cookie;
-            var _a;
-            return __generator(this, function (_b) {
+            var cookieConfig, preserveEssential, essentialCookies, targetNames, targetDomains, targetPaths, allCookies, cleared, _loop_1, this_1, allCookies_1, allCookies_1_1, cookie;
+            var e_2, _a;
+            var _b;
+            return __generator(this, function (_c) {
                 try {
                     cookieConfig = this.config.cookies;
-                    preserveEssential = (_a = cookieConfig === null || cookieConfig === void 0 ? void 0 : cookieConfig.preserveEssential) !== null && _a !== void 0 ? _a : true;
+                    preserveEssential = (_b = cookieConfig === null || cookieConfig === void 0 ? void 0 : cookieConfig.preserveEssential) !== null && _b !== void 0 ? _b : true;
                     essentialCookies = (cookieConfig === null || cookieConfig === void 0 ? void 0 : cookieConfig.essentialCookies) || [];
                     targetNames = cookieConfig === null || cookieConfig === void 0 ? void 0 : cookieConfig.names;
                     targetDomains = cookieConfig === null || cookieConfig === void 0 ? void 0 : cookieConfig.domains;
@@ -196,9 +251,18 @@ var BrowserCacheStrategy = /** @class */ (function () {
                         this_1.logger.debug("Deleted cookie: ".concat(cookie.name));
                     };
                     this_1 = this;
-                    for (_i = 0, allCookies_1 = allCookies; _i < allCookies_1.length; _i++) {
-                        cookie = allCookies_1[_i];
-                        _loop_1(cookie);
+                    try {
+                        for (allCookies_1 = __values(allCookies), allCookies_1_1 = allCookies_1.next(); !allCookies_1_1.done; allCookies_1_1 = allCookies_1.next()) {
+                            cookie = allCookies_1_1.value;
+                            _loop_1(cookie);
+                        }
+                    }
+                    catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                    finally {
+                        try {
+                            if (allCookies_1_1 && !allCookies_1_1.done && (_a = allCookies_1.return)) _a.call(allCookies_1);
+                        }
+                        finally { if (e_2) throw e_2.error; }
                     }
                     return [2 /*return*/, {
                             type: 'cookies',
@@ -215,7 +279,7 @@ var BrowserCacheStrategy = /** @class */ (function () {
     };
     BrowserCacheStrategy.prototype.parseCookies = function () {
         return document.cookie.split(';').map(function (cookie) {
-            var _a = cookie.trim().split('='), name = _a[0], value = _a[1];
+            var _a = __read(cookie.trim().split('='), 2), name = _a[0], value = _a[1];
             return { name: name, value: value || '' };
         }).filter(function (c) { return c.name; });
     };
@@ -228,28 +292,83 @@ var BrowserCacheStrategy = /** @class */ (function () {
             this.deleteCookieWithDomain(name, paths, [cookieConfig.domain], expiry);
             return;
         }
-        // Try different domain combinations
-        var domainsToTry = domains || [
-            '', // Current domain
-            window.location.hostname,
-            '.' + window.location.hostname,
-            window.location.hostname.split('.').slice(-2).join('.'), // Root domain (best effort)
-            window.location.hostname.split('.').slice(-3).join('.') // Deeper subdomains
-        ];
+        // Auto-detect domains using improved heuristic
+        var domainsToTry = domains || this.getDomainsToTry();
         this.deleteCookieWithDomain(name, paths, domainsToTry, expiry);
     };
-    BrowserCacheStrategy.prototype.deleteCookieWithDomain = function (name, paths, domains, expiry) {
-        for (var _i = 0, paths_1 = paths; _i < paths_1.length; _i++) {
-            var path = paths_1[_i];
-            for (var _a = 0, domains_1 = domains; _a < domains_1.length; _a++) {
-                var domain = domains_1[_a];
-                // Skip invalid domain segments
-                if (domain && domain.indexOf('.') === -1 && domain !== 'localhost')
-                    continue;
-                var domainPart = domain ? "; domain=".concat(domain) : '';
-                document.cookie = "".concat(name, "=; expires=").concat(expiry, "; path=").concat(path).concat(domainPart);
-                document.cookie = "".concat(name, "=; expires=").concat(expiry, "; path=").concat(path).concat(domainPart, "; secure");
+    BrowserCacheStrategy.prototype.getDomainsToTry = function () {
+        var hostname = window.location.hostname;
+        var parts = hostname.split('.');
+        var domains = [''];
+        // Always try the exact hostname
+        if (hostname) {
+            domains.push(hostname);
+            domains.push('.' + hostname);
+        }
+        // Try parent domains (from most specific to least)
+        if (parts.length >= 2) {
+            // Try 2-part domain (example.com)
+            var twoPartDomain = parts.slice(-2).join('.');
+            if (twoPartDomain !== hostname) {
+                domains.push(twoPartDomain);
+                domains.push('.' + twoPartDomain);
             }
+        }
+        if (parts.length >= 3) {
+            // Try 3-part domain (for .co.uk, .gov.au patterns)
+            var threePartDomain = parts.slice(-3).join('.');
+            if (threePartDomain !== hostname &&
+                !domains.includes(threePartDomain) &&
+                threePartDomain.split('.').length >= 2) {
+                domains.push(threePartDomain);
+                domains.push('.' + threePartDomain);
+            }
+        }
+        // Remove duplicates and invalid entries
+        return __spreadArray([], __read(new Set(domains)), false).filter(function (d) {
+            // Allow empty string (current domain) and valid domain strings
+            return d === '' || d === 'localhost' || /^\.?[a-zA-Z0-9][-a-zA-Z0-9]*(\.[a-zA-Z0-9][-a-zA-Z0-9]*)+$/.test(d);
+        });
+    };
+    BrowserCacheStrategy.prototype.deleteCookieWithDomain = function (name, paths, domains, expiry) {
+        var e_3, _a, e_4, _b;
+        try {
+            for (var paths_1 = __values(paths), paths_1_1 = paths_1.next(); !paths_1_1.done; paths_1_1 = paths_1.next()) {
+                var path = paths_1_1.value;
+                try {
+                    for (var domains_1 = (e_4 = void 0, __values(domains)), domains_1_1 = domains_1.next(); !domains_1_1.done; domains_1_1 = domains_1.next()) {
+                        var domain = domains_1_1.value;
+                        // Skip invalid domain segments
+                        if (domain && domain.indexOf('.') === -1 && domain !== 'localhost')
+                            continue;
+                        var domainPart = domain ? "; domain=".concat(domain) : '';
+                        // Standard cookie deletion
+                        document.cookie = "".concat(name, "=; expires=").concat(expiry, "; path=").concat(path).concat(domainPart);
+                        // Also try secure flag for HTTPS
+                        document.cookie = "".concat(name, "=; expires=").concat(expiry, "; path=").concat(path).concat(domainPart, "; secure");
+                        // Log deletion attempts for debugging
+                        this.logger.debug("Attempted to delete cookie \"".concat(name, "\""), {
+                            domain: domain || '(current)',
+                            path: path,
+                            timestamp: new Date().toISOString()
+                        });
+                    }
+                }
+                catch (e_4_1) { e_4 = { error: e_4_1 }; }
+                finally {
+                    try {
+                        if (domains_1_1 && !domains_1_1.done && (_b = domains_1.return)) _b.call(domains_1);
+                    }
+                    finally { if (e_4) throw e_4.error; }
+                }
+            }
+        }
+        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+        finally {
+            try {
+                if (paths_1_1 && !paths_1_1.done && (_a = paths_1.return)) _a.call(paths_1);
+            }
+            finally { if (e_3) throw e_3.error; }
         }
     };
     BrowserCacheStrategy.prototype.shouldExclude = function (value) {
@@ -282,10 +401,11 @@ var ServiceWorkerStrategy = /** @class */ (function () {
     }
     ServiceWorkerStrategy.prototype.clear = function () {
         return __awaiter(this, arguments, void 0, function (options) {
-            var registrations, unregistered, _i, registrations_1, registration, success, error_1;
+            var registrations, unregistered, registrations_1, registrations_1_1, registration, success, e_1_1, error_1;
+            var e_1, _a;
             if (options === void 0) { options = {}; }
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         if (!('serviceWorker' in navigator)) {
                             return [2 /*return*/, {
@@ -294,84 +414,113 @@ var ServiceWorkerStrategy = /** @class */ (function () {
                                     error: 'Service Workers not supported'
                                 }];
                         }
-                        _a.label = 1;
+                        _b.label = 1;
                     case 1:
-                        _a.trys.push([1, 9, , 10]);
+                        _b.trys.push([1, 13, , 14]);
                         return [4 /*yield*/, navigator.serviceWorker.getRegistrations()];
                     case 2:
-                        registrations = _a.sent();
+                        registrations = _b.sent();
                         unregistered = 0;
-                        _i = 0, registrations_1 = registrations;
-                        _a.label = 3;
+                        _b.label = 3;
                     case 3:
-                        if (!(_i < registrations_1.length)) return [3 /*break*/, 6];
-                        registration = registrations_1[_i];
+                        _b.trys.push([3, 8, 9, 10]);
+                        registrations_1 = __values(registrations), registrations_1_1 = registrations_1.next();
+                        _b.label = 4;
+                    case 4:
+                        if (!!registrations_1_1.done) return [3 /*break*/, 7];
+                        registration = registrations_1_1.value;
                         // Check if should be excluded
                         if (this.shouldExclude(registration.scope)) {
                             this.logger.debug("Skipping SW: ".concat(registration.scope));
-                            return [3 /*break*/, 5];
+                            return [3 /*break*/, 6];
                         }
                         return [4 /*yield*/, registration.unregister()];
-                    case 4:
-                        success = _a.sent();
+                    case 5:
+                        success = _b.sent();
                         if (success) {
                             unregistered++;
                             this.logger.debug("Unregistered SW: ".concat(registration.scope));
                         }
-                        _a.label = 5;
-                    case 5:
-                        _i++;
-                        return [3 /*break*/, 3];
+                        _b.label = 6;
                     case 6:
-                        if (!!options.skipCacheClear) return [3 /*break*/, 8];
+                        registrations_1_1 = registrations_1.next();
+                        return [3 /*break*/, 4];
+                    case 7: return [3 /*break*/, 10];
+                    case 8:
+                        e_1_1 = _b.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3 /*break*/, 10];
+                    case 9:
+                        try {
+                            if (registrations_1_1 && !registrations_1_1.done && (_a = registrations_1.return)) _a.call(registrations_1);
+                        }
+                        finally { if (e_1) throw e_1.error; }
+                        return [7 /*endfinally*/];
+                    case 10:
+                        if (!!options.skipCacheClear) return [3 /*break*/, 12];
                         return [4 /*yield*/, this.clearServiceWorkerCaches()];
-                    case 7:
-                        _a.sent();
-                        _a.label = 8;
-                    case 8: return [2 /*return*/, {
+                    case 11:
+                        _b.sent();
+                        _b.label = 12;
+                    case 12: return [2 /*return*/, {
                             type: 'serviceWorker',
                             success: true,
                             itemsCleared: unregistered
                         }];
-                    case 9:
-                        error_1 = _a.sent();
+                    case 13:
+                        error_1 = _b.sent();
                         throw new CacheShieldError('Failed to clear Service Workers', 'UNKNOWN', 'serviceWorker', error_1 instanceof Error ? error_1 : undefined);
-                    case 10: return [2 /*return*/];
+                    case 14: return [2 /*return*/];
                 }
             });
         });
     };
     ServiceWorkerStrategy.prototype.clearServiceWorkerCaches = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var cacheNames, cleared, _i, cacheNames_1, cacheName;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var cacheNames, cleared, cacheNames_1, cacheNames_1_1, cacheName, e_2_1;
+            var e_2, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         if (!('caches' in window)) {
                             return [2 /*return*/, 0];
                         }
                         return [4 /*yield*/, caches.keys()];
                     case 1:
-                        cacheNames = _a.sent();
+                        cacheNames = _b.sent();
                         cleared = 0;
-                        _i = 0, cacheNames_1 = cacheNames;
-                        _a.label = 2;
+                        _b.label = 2;
                     case 2:
-                        if (!(_i < cacheNames_1.length)) return [3 /*break*/, 5];
-                        cacheName = cacheNames_1[_i];
+                        _b.trys.push([2, 7, 8, 9]);
+                        cacheNames_1 = __values(cacheNames), cacheNames_1_1 = cacheNames_1.next();
+                        _b.label = 3;
+                    case 3:
+                        if (!!cacheNames_1_1.done) return [3 /*break*/, 6];
+                        cacheName = cacheNames_1_1.value;
                         if (this.shouldExclude(cacheName)) {
-                            return [3 /*break*/, 4];
+                            return [3 /*break*/, 5];
                         }
                         return [4 /*yield*/, caches.delete(cacheName)];
-                    case 3:
-                        _a.sent();
+                    case 4:
+                        _b.sent();
                         cleared++;
                         this.logger.debug("Deleted cache: ".concat(cacheName));
-                        _a.label = 4;
-                    case 4:
-                        _i++;
-                        return [3 /*break*/, 2];
-                    case 5: return [2 /*return*/, cleared];
+                        _b.label = 5;
+                    case 5:
+                        cacheNames_1_1 = cacheNames_1.next();
+                        return [3 /*break*/, 3];
+                    case 6: return [3 /*break*/, 9];
+                    case 7:
+                        e_2_1 = _b.sent();
+                        e_2 = { error: e_2_1 };
+                        return [3 /*break*/, 9];
+                    case 8:
+                        try {
+                            if (cacheNames_1_1 && !cacheNames_1_1.done && (_a = cacheNames_1.return)) _a.call(cacheNames_1);
+                        }
+                        finally { if (e_2) throw e_2.error; }
+                        return [7 /*endfinally*/];
+                    case 9: return [2 /*return*/, cleared];
                 }
             });
         });
@@ -449,8 +598,9 @@ var StorageStrategy = /** @class */ (function () {
     };
     StorageStrategy.prototype.clearStorage = function (type, storage) {
         return __awaiter(this, void 0, void 0, function () {
-            var storageConfig, preserveKeys, preservePattern, keyPattern, keysToRemove, keysToPreserve, i, key, bytesFreed, _i, keysToRemove_1, key, value, _a, keysToRemove_2, key;
-            return __generator(this, function (_b) {
+            var storageConfig, preserveKeys, preservePattern, keyPattern, keysToRemove, keysToPreserve, i, key, bytesFreed, keysToRemove_1, keysToRemove_1_1, key, value, keysToRemove_2, keysToRemove_2_1, key;
+            var e_1, _a, e_2, _b;
+            return __generator(this, function (_c) {
                 try {
                     storageConfig = this.config.storage;
                     preserveKeys = (storageConfig === null || storageConfig === void 0 ? void 0 : storageConfig.preserveKeys) || [];
@@ -479,19 +629,37 @@ var StorageStrategy = /** @class */ (function () {
                         keysToRemove.push(key);
                     }
                     bytesFreed = 0;
-                    for (_i = 0, keysToRemove_1 = keysToRemove; _i < keysToRemove_1.length; _i++) {
-                        key = keysToRemove_1[_i];
-                        value = storage.getItem(key);
-                        if (value) {
-                            bytesFreed += key.length + value.length;
+                    try {
+                        for (keysToRemove_1 = __values(keysToRemove), keysToRemove_1_1 = keysToRemove_1.next(); !keysToRemove_1_1.done; keysToRemove_1_1 = keysToRemove_1.next()) {
+                            key = keysToRemove_1_1.value;
+                            value = storage.getItem(key);
+                            if (value) {
+                                bytesFreed += key.length + value.length;
+                            }
                         }
                     }
+                    catch (e_1_1) { e_1 = { error: e_1_1 }; }
+                    finally {
+                        try {
+                            if (keysToRemove_1_1 && !keysToRemove_1_1.done && (_a = keysToRemove_1.return)) _a.call(keysToRemove_1);
+                        }
+                        finally { if (e_1) throw e_1.error; }
+                    }
                     bytesFreed *= 2; // UTF-16
-                    // Remove keys
-                    for (_a = 0, keysToRemove_2 = keysToRemove; _a < keysToRemove_2.length; _a++) {
-                        key = keysToRemove_2[_a];
-                        storage.removeItem(key);
-                        this.logger.debug("Removed ".concat(type, " key: ").concat(key));
+                    try {
+                        // Remove keys
+                        for (keysToRemove_2 = __values(keysToRemove), keysToRemove_2_1 = keysToRemove_2.next(); !keysToRemove_2_1.done; keysToRemove_2_1 = keysToRemove_2.next()) {
+                            key = keysToRemove_2_1.value;
+                            storage.removeItem(key);
+                            this.logger.debug("Removed ".concat(type, " key: ").concat(key));
+                        }
+                    }
+                    catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                    finally {
+                        try {
+                            if (keysToRemove_2_1 && !keysToRemove_2_1.done && (_b = keysToRemove_2.return)) _b.call(keysToRemove_2);
+                        }
+                        finally { if (e_2) throw e_2.error; }
                     }
                     this.logger.info("".concat(type, " cleared"), {
                         removed: keysToRemove.length,
@@ -541,10 +709,11 @@ var IndexedDBStrategy = /** @class */ (function () {
     }
     IndexedDBStrategy.prototype.clear = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var databases, idbConfig, targetDatabases, deleteDatabase, cleared, _i, databases_1, dbInfo, dbName, error_1;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var databases, idbConfig, targetDatabases, deleteDatabase, cleared, databases_1, databases_1_1, dbInfo, dbName, e_1_1, error_1;
+            var e_1, _a;
+            var _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
                         if (!('indexedDB' in window)) {
                             return [2 /*return*/, {
@@ -553,75 +722,201 @@ var IndexedDBStrategy = /** @class */ (function () {
                                     error: 'IndexedDB not supported'
                                 }];
                         }
-                        _b.label = 1;
+                        _c.label = 1;
                     case 1:
-                        _b.trys.push([1, 10, , 11]);
+                        _c.trys.push([1, 14, , 15]);
                         return [4 /*yield*/, this.getDatabases()];
                     case 2:
-                        databases = _b.sent();
+                        databases = _c.sent();
                         idbConfig = this.config.indexedDB;
                         targetDatabases = idbConfig === null || idbConfig === void 0 ? void 0 : idbConfig.databases;
-                        deleteDatabase = (_a = idbConfig === null || idbConfig === void 0 ? void 0 : idbConfig.deleteDatabase) !== null && _a !== void 0 ? _a : true;
+                        deleteDatabase = (_b = idbConfig === null || idbConfig === void 0 ? void 0 : idbConfig.deleteDatabase) !== null && _b !== void 0 ? _b : true;
                         cleared = 0;
-                        _i = 0, databases_1 = databases;
-                        _b.label = 3;
+                        _c.label = 3;
                     case 3:
-                        if (!(_i < databases_1.length)) return [3 /*break*/, 9];
-                        dbInfo = databases_1[_i];
+                        _c.trys.push([3, 11, 12, 13]);
+                        databases_1 = __values(databases), databases_1_1 = databases_1.next();
+                        _c.label = 4;
+                    case 4:
+                        if (!!databases_1_1.done) return [3 /*break*/, 10];
+                        dbInfo = databases_1_1.value;
                         dbName = dbInfo.name;
                         if (!dbName)
-                            return [3 /*break*/, 8];
+                            return [3 /*break*/, 9];
                         // Check if specific databases are targeted
                         if (targetDatabases && targetDatabases.length > 0) {
                             if (!targetDatabases.includes(dbName)) {
-                                return [3 /*break*/, 8];
+                                return [3 /*break*/, 9];
                             }
                         }
                         // Check exclusions
                         if (this.shouldExclude(dbName)) {
                             this.logger.debug("Skipping IndexedDB: ".concat(dbName));
-                            return [3 /*break*/, 8];
+                            return [3 /*break*/, 9];
                         }
-                        if (!deleteDatabase) return [3 /*break*/, 5];
+                        if (!deleteDatabase) return [3 /*break*/, 6];
                         return [4 /*yield*/, this.deleteDatabase(dbName)];
-                    case 4:
-                        _b.sent();
-                        return [3 /*break*/, 7];
-                    case 5: return [4 /*yield*/, this.clearDatabaseData(dbName)];
-                    case 6:
-                        _b.sent();
-                        _b.label = 7;
+                    case 5:
+                        _c.sent();
+                        return [3 /*break*/, 8];
+                    case 6: return [4 /*yield*/, this.clearDatabaseData(dbName)];
                     case 7:
+                        _c.sent();
+                        _c.label = 8;
+                    case 8:
                         cleared++;
                         this.logger.debug("Cleared IndexedDB: ".concat(dbName));
-                        _b.label = 8;
-                    case 8:
-                        _i++;
-                        return [3 /*break*/, 3];
-                    case 9: return [2 /*return*/, {
+                        _c.label = 9;
+                    case 9:
+                        databases_1_1 = databases_1.next();
+                        return [3 /*break*/, 4];
+                    case 10: return [3 /*break*/, 13];
+                    case 11:
+                        e_1_1 = _c.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3 /*break*/, 13];
+                    case 12:
+                        try {
+                            if (databases_1_1 && !databases_1_1.done && (_a = databases_1.return)) _a.call(databases_1);
+                        }
+                        finally { if (e_1) throw e_1.error; }
+                        return [7 /*endfinally*/];
+                    case 13: return [2 /*return*/, {
                             type: 'indexedDB',
                             success: true,
                             itemsCleared: cleared
                         }];
-                    case 10:
-                        error_1 = _b.sent();
+                    case 14:
+                        error_1 = _c.sent();
                         throw new CacheShieldError('Failed to clear IndexedDB', 'UNKNOWN', 'indexedDB', error_1 instanceof Error ? error_1 : undefined);
-                    case 11: return [2 /*return*/];
+                    case 15: return [2 /*return*/];
                 }
             });
         });
     };
     IndexedDBStrategy.prototype.getDatabases = function () {
         return __awaiter(this, void 0, void 0, function () {
+            var error_2;
             return __generator(this, function (_a) {
-                // Modern browsers support indexedDB.databases()
-                if ('databases' in indexedDB) {
-                    return [2 /*return*/, indexedDB.databases()];
+                switch (_a.label) {
+                    case 0:
+                        if (!('databases' in indexedDB)) return [3 /*break*/, 4];
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, indexedDB.databases()];
+                    case 2: return [2 /*return*/, _a.sent()];
+                    case 3:
+                        error_2 = _a.sent();
+                        this.logger.warn('indexedDB.databases() failed', error_2);
+                        return [2 /*return*/, this.getFallbackDatabases()];
+                    case 4: 
+                    // Fallback: For Safari and older browsers
+                    return [2 /*return*/, this.getFallbackDatabases()];
                 }
-                // Fallback: return empty array (can't enumerate DBs in older browsers)
-                this.logger.warn('indexedDB.databases() not supported');
-                return [2 /*return*/, []];
             });
+        });
+    };
+    IndexedDBStrategy.prototype.getFallbackDatabases = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var configured, commonNames, detected, commonNames_1, commonNames_1_1, dbName, exists, e_3_1;
+            var e_3, _a;
+            var _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        configured = ((_b = this.config.indexedDB) === null || _b === void 0 ? void 0 : _b.databases) || [];
+                        if (configured.length > 0) {
+                            this.logger.debug('Using configured database names', configured);
+                            return [2 /*return*/, configured.map(function (name) { return ({ name: name }); })];
+                        }
+                        commonNames = [
+                            'firebaseLocalStorageDb',
+                            '_ionicstorage',
+                            'reactnative',
+                            'redux-persist',
+                            'localforage',
+                            'ngsw:cache:v1',
+                            'vuex-persist',
+                            'pouchdb',
+                            '__zone_symbol__Promise',
+                            'default'
+                        ];
+                        detected = [];
+                        _c.label = 1;
+                    case 1:
+                        _c.trys.push([1, 8, 9, 10]);
+                        commonNames_1 = __values(commonNames), commonNames_1_1 = commonNames_1.next();
+                        _c.label = 2;
+                    case 2:
+                        if (!!commonNames_1_1.done) return [3 /*break*/, 7];
+                        dbName = commonNames_1_1.value;
+                        _c.label = 3;
+                    case 3:
+                        _c.trys.push([3, 5, , 6]);
+                        return [4 /*yield*/, this.testDatabaseExists(dbName)];
+                    case 4:
+                        exists = _c.sent();
+                        if (exists) {
+                            detected.push({ name: dbName });
+                        }
+                        return [3 /*break*/, 6];
+                    case 5:
+                        _c.sent();
+                        return [3 /*break*/, 6];
+                    case 6:
+                        commonNames_1_1 = commonNames_1.next();
+                        return [3 /*break*/, 2];
+                    case 7: return [3 /*break*/, 10];
+                    case 8:
+                        e_3_1 = _c.sent();
+                        e_3 = { error: e_3_1 };
+                        return [3 /*break*/, 10];
+                    case 9:
+                        try {
+                            if (commonNames_1_1 && !commonNames_1_1.done && (_a = commonNames_1.return)) _a.call(commonNames_1);
+                        }
+                        finally { if (e_3) throw e_3.error; }
+                        return [7 /*endfinally*/];
+                    case 10:
+                        if (detected.length === 0) {
+                            this.logger.warn('No IndexedDB databases found. Specify databases in config for Safari/older browsers.', { example: 'indexedDB: { databases: ["my-db"] }' });
+                        }
+                        return [2 /*return*/, detected];
+                }
+            });
+        });
+    };
+    IndexedDBStrategy.prototype.testDatabaseExists = function (name) {
+        return new Promise(function (resolve) {
+            try {
+                var request_1 = indexedDB.open(name);
+                var found_1 = false;
+                request_1.onsuccess = function () {
+                    var db = request_1.result;
+                    found_1 = db.objectStoreNames.length > 0;
+                    db.close();
+                    resolve(found_1);
+                };
+                request_1.onerror = function () {
+                    resolve(false);
+                };
+                request_1.onupgradeneeded = function () {
+                    // Database exists but is new
+                    request_1.result.close();
+                    resolve(false);
+                };
+                // Timeout after 1 second
+                setTimeout(function () {
+                    if (!found_1 && request_1.result) {
+                        request_1.result.close();
+                        resolve(found_1);
+                    }
+                }, 1000);
+            }
+            catch (e) {
+                resolve(false);
+            }
         });
     };
     IndexedDBStrategy.prototype.deleteDatabase = function (name) {
@@ -649,8 +944,9 @@ var IndexedDBStrategy = /** @class */ (function () {
                 return [2 /*return*/, new Promise(function (resolve, reject) {
                         var request = indexedDB.open(name);
                         request.onsuccess = function () { return __awaiter(_this, void 0, void 0, function () {
-                            var db, storeNames, transaction, _i, storeNames_1, storeName, store;
-                            return __generator(this, function (_a) {
+                            var db, storeNames, transaction, storeNames_1, storeNames_1_1, storeName, store;
+                            var e_4, _a;
+                            return __generator(this, function (_b) {
                                 db = request.result;
                                 storeNames = Array.from(db.objectStoreNames);
                                 if (storeNames.length === 0) {
@@ -659,10 +955,19 @@ var IndexedDBStrategy = /** @class */ (function () {
                                     return [2 /*return*/];
                                 }
                                 transaction = db.transaction(storeNames, 'readwrite');
-                                for (_i = 0, storeNames_1 = storeNames; _i < storeNames_1.length; _i++) {
-                                    storeName = storeNames_1[_i];
-                                    store = transaction.objectStore(storeName);
-                                    store.clear();
+                                try {
+                                    for (storeNames_1 = __values(storeNames), storeNames_1_1 = storeNames_1.next(); !storeNames_1_1.done; storeNames_1_1 = storeNames_1.next()) {
+                                        storeName = storeNames_1_1.value;
+                                        store = transaction.objectStore(storeName);
+                                        store.clear();
+                                    }
+                                }
+                                catch (e_4_1) { e_4 = { error: e_4_1 }; }
+                                finally {
+                                    try {
+                                        if (storeNames_1_1 && !storeNames_1_1.done && (_a = storeNames_1.return)) _a.call(storeNames_1);
+                                    }
+                                    finally { if (e_4) throw e_4.error; }
                                 }
                                 transaction.oncomplete = function () {
                                     db.close();
@@ -871,25 +1176,26 @@ var CacheShield = /** @class */ (function () {
      */
     CacheShield.prototype.clear = function (options) {
         return __awaiter(this, void 0, void 0, function () {
-            var startTime, config, targets, error_1, results, total, completed, hasCacheAPI, _i, targets_1, target, result, error_2, cacheError, duration, clearResult, error_3;
+            var startTime, config, targets, error_1, results, total, completed, hasCacheAPI, targets_1, targets_1_1, target, result, error_2, cacheError, e_1_1, duration, clearResult, error_3;
+            var e_1, _a;
             var _this = this;
-            var _a, _b, _c, _d, _e, _f, _g, _h;
-            return __generator(this, function (_j) {
-                switch (_j.label) {
+            var _b, _c, _d, _e, _f, _g, _h, _j;
+            return __generator(this, function (_k) {
+                switch (_k.label) {
                     case 0:
                         startTime = performance.now();
                         config = options ? this.mergeConfig(__assign(__assign({}, this.config), options)) : this.config;
                         targets = this.resolveTargets(config.targets);
                         this.logger.info('Starting cache clear', { targets: targets });
-                        _j.label = 1;
+                        _k.label = 1;
                     case 1:
-                        _j.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, ((_b = (_a = config.hooks).onBeforeClear) === null || _b === void 0 ? void 0 : _b.call(_a, targets))];
+                        _k.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, ((_c = (_b = config.hooks).onBeforeClear) === null || _c === void 0 ? void 0 : _c.call(_b, targets))];
                     case 2:
-                        _j.sent();
+                        _k.sent();
                         return [3 /*break*/, 4];
                     case 3:
-                        error_1 = _j.sent();
+                        error_1 = _k.sent();
                         this.logger.error('onBeforeClear hook failed', error_1);
                         return [3 /*break*/, 4];
                     case 4:
@@ -897,19 +1203,22 @@ var CacheShield = /** @class */ (function () {
                         total = targets.length;
                         completed = 0;
                         hasCacheAPI = targets.includes('cacheAPI');
-                        _i = 0, targets_1 = targets;
-                        _j.label = 5;
+                        _k.label = 5;
                     case 5:
-                        if (!(_i < targets_1.length)) return [3 /*break*/, 11];
-                        target = targets_1[_i];
-                        _j.label = 6;
+                        _k.trys.push([5, 13, 14, 15]);
+                        targets_1 = __values(targets), targets_1_1 = targets_1.next();
+                        _k.label = 6;
                     case 6:
-                        _j.trys.push([6, 8, , 9]);
+                        if (!!targets_1_1.done) return [3 /*break*/, 12];
+                        target = targets_1_1.value;
+                        _k.label = 7;
+                    case 7:
+                        _k.trys.push([7, 9, , 10]);
                         return [4 /*yield*/, this.clearCacheType(target, {
                                 skipCacheClear: target === 'serviceWorker' && hasCacheAPI
                             })];
-                    case 7:
-                        result = _j.sent();
+                    case 8:
+                        result = _k.sent();
                         results.push(result);
                         if (result.success) {
                             this.logger.success("Cleared ".concat(target), result);
@@ -917,12 +1226,12 @@ var CacheShield = /** @class */ (function () {
                         else {
                             this.logger.warn("Failed to clear ".concat(target), result);
                         }
-                        return [3 /*break*/, 9];
-                    case 8:
-                        error_2 = _j.sent();
+                        return [3 /*break*/, 10];
+                    case 9:
+                        error_2 = _k.sent();
                         cacheError = this.wrapError(error_2, target);
                         try {
-                            (_d = (_c = config.hooks).onError) === null || _d === void 0 ? void 0 : _d.call(_c, cacheError);
+                            (_e = (_d = config.hooks).onError) === null || _e === void 0 ? void 0 : _e.call(_d, cacheError);
                         }
                         catch (hookError) {
                             this.logger.error('onError hook failed', hookError);
@@ -932,11 +1241,11 @@ var CacheShield = /** @class */ (function () {
                             success: false,
                             error: cacheError.message
                         });
-                        return [3 /*break*/, 9];
-                    case 9:
+                        return [3 /*break*/, 10];
+                    case 10:
                         completed++;
                         try {
-                            (_f = (_e = config.hooks).onProgress) === null || _f === void 0 ? void 0 : _f.call(_e, {
+                            (_g = (_f = config.hooks).onProgress) === null || _g === void 0 ? void 0 : _g.call(_f, {
                                 current: target,
                                 completed: completed,
                                 total: total,
@@ -946,11 +1255,22 @@ var CacheShield = /** @class */ (function () {
                         catch (error) {
                             this.logger.error('onProgress hook failed', error);
                         }
-                        _j.label = 10;
-                    case 10:
-                        _i++;
-                        return [3 /*break*/, 5];
+                        _k.label = 11;
                     case 11:
+                        targets_1_1 = targets_1.next();
+                        return [3 /*break*/, 6];
+                    case 12: return [3 /*break*/, 15];
+                    case 13:
+                        e_1_1 = _k.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3 /*break*/, 15];
+                    case 14:
+                        try {
+                            if (targets_1_1 && !targets_1_1.done && (_a = targets_1.return)) _a.call(targets_1);
+                        }
+                        finally { if (e_1) throw e_1.error; }
+                        return [7 /*endfinally*/];
+                    case 15:
                         duration = performance.now() - startTime;
                         clearResult = {
                             success: results.every(function (r) { return r.success; }),
@@ -960,18 +1280,18 @@ var CacheShield = /** @class */ (function () {
                             duration: duration
                         };
                         this.logger.info('Cache clear completed', clearResult);
-                        _j.label = 12;
-                    case 12:
-                        _j.trys.push([12, 14, , 15]);
-                        return [4 /*yield*/, ((_h = (_g = config.hooks).onAfterClear) === null || _h === void 0 ? void 0 : _h.call(_g, clearResult))];
-                    case 13:
-                        _j.sent();
-                        return [3 /*break*/, 15];
-                    case 14:
-                        error_3 = _j.sent();
+                        _k.label = 16;
+                    case 16:
+                        _k.trys.push([16, 18, , 19]);
+                        return [4 /*yield*/, ((_j = (_h = config.hooks).onAfterClear) === null || _j === void 0 ? void 0 : _j.call(_h, clearResult))];
+                    case 17:
+                        _k.sent();
+                        return [3 /*break*/, 19];
+                    case 18:
+                        error_3 = _k.sent();
                         this.logger.error('onAfterClear hook failed', error_3);
-                        return [3 /*break*/, 15];
-                    case 15:
+                        return [3 /*break*/, 19];
+                    case 19:
                         // Auto reload if configured
                         if (config.autoReload && clearResult.success) {
                             setTimeout(function () {

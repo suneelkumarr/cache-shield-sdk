@@ -8,6 +8,7 @@ export declare class BrowserCacheStrategy {
     clearCookies(): Promise<CacheTypeResult>;
     private parseCookies;
     private deleteCookie;
+    private getDomainsToTry;
     private deleteCookieWithDomain;
     private shouldExclude;
     private shouldInclude;

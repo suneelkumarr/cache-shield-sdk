@@ -6,6 +6,8 @@ export declare class IndexedDBStrategy {
     constructor(config: CacheShieldConfig, logger: Logger);
     clear(): Promise<CacheTypeResult>;
     private getDatabases;
+    private getFallbackDatabases;
+    private testDatabaseExists;
     private deleteDatabase;
     private clearDatabaseData;
     private shouldExclude;

@@ -334,18 +334,38 @@ describe('Strategies', () => {
 
   describe('Cross-strategy integration', () => {
     it('should all strategies have proper error handling', async () => {
-      const strategies = [
-        new StorageStrategy(mockConfig, mockLogger),
-        new BrowserCacheStrategy(mockConfig, mockLogger),
-        new ServiceWorkerStrategy(mockConfig, mockLogger),
-        new IndexedDBStrategy(mockConfig, mockLogger)
-      ];
+      const storageStrategy = new StorageStrategy(mockConfig, mockLogger);
+      const browserStrategy = new BrowserCacheStrategy(mockConfig, mockLogger);
+      const swStrategy = new ServiceWorkerStrategy(mockConfig, mockLogger);
+      const idbStrategy = new IndexedDBStrategy(mockConfig, mockLogger);
 
-      for (const strategy of strategies) {
-        const result = await (strategy as any).clear?.() || { success: false };
-        expect(result).toHaveProperty('type');
-        expect(result).toHaveProperty('success');
-      }
+      // Test StorageStrategy methods
+      const localStorageResult = await storageStrategy.clearLocalStorage();
+      expect(localStorageResult).toHaveProperty('type', 'localStorage');
+      expect(localStorageResult).toHaveProperty('success');
+
+      const sessionStorageResult = await storageStrategy.clearSessionStorage();
+      expect(sessionStorageResult).toHaveProperty('type', 'sessionStorage');
+      expect(sessionStorageResult).toHaveProperty('success');
+
+      // Test BrowserCacheStrategy methods
+      const cookiesResult = await browserStrategy.clearCookies();
+      expect(cookiesResult).toHaveProperty('type', 'cookies');
+      expect(cookiesResult).toHaveProperty('success');
+      
+      const cacheApiResult = await browserStrategy.clearCacheAPI();
+      expect(cacheApiResult).toHaveProperty('type', 'cacheAPI');
+      expect(cacheApiResult).toHaveProperty('success');
+
+      // Test ServiceWorkerStrategy
+      const swResult = await swStrategy.clear();
+      expect(swResult).toHaveProperty('type', 'serviceWorker');
+      expect(swResult).toHaveProperty('success');
+
+      // Test IndexedDBStrategy
+      const idbResult = await idbStrategy.clear();
+      expect(idbResult).toHaveProperty('type', 'indexedDB');
+      expect(idbResult).toHaveProperty('success');
     });
   });
 });

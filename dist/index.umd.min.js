@@ -1,5 +1,5 @@
 /*!
- * cache-shield-sdk v1.1.0
+ * cache-shield-sdk v1.2.0
  * (c) 2026 Suneel Kumar
  * Released under the MIT License
  */
